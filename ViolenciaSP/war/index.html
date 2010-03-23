@@ -1,0 +1,118 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" >
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+<title>Violência em São Paulo</title>
+<link rel="stylesheet" href="violencia.css">
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="map.js" charset="utf-8"></script>
+<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+<script type="text/javascript">
+
+
+function go() {
+	$address = document.getElementById("address").value;
+	$.get("/search", {address:$address}, function(xml) {
+		texto = "<label>Latitude: <label>" + $("delegacy_latitude", xml).text();
+		texto += "<br><label>Longitude: <label> " + $("delegacy_longitude", xml).text();
+		texto += "<br><label>Delegacia mais próxima: <label> " + $("delegacy_name", xml).text();
+		texto += "<br/><label><b>Criminalidade na região (dados anuais)</b></label>";
+		texto += "<br><label>Roubos: <label> " + $("robbery", xml).text();
+		texto += "<br><label>Furtos: <label> " + $("thieves", xml).text();
+		texto += "<br><label>Assaltos: <label> " + $("kidnapping", xml).text();
+		texto += "<br><label>Extorsão: <label> " + $("extortion", xml).text();
+		texto += "<br><label>Estelionatos: <label> " + $("swindler", xml).text();
+		texto += "<br><label>Outros crimes: <label> " + $("others", xml).text();
+		texto += "<br><label>Total de ocorrências: <label> " + $("total", xml).text();
+
+		texto += "<br><label><b>Em relaçao ao município de São Paulo:</b><label> ";
+
+		texto += "<br><label>Furtos: <label> " + $("p_thieves", xml).text();
+		texto += "<br><label>Roubos: <label> " + $("p_robbery", xml).text();
+		texto += "<br><label>Sequestro: <label> " + $("p_kiddnapping", xml).text();
+		texto += "<br><label>Extorsão: <label> " + $("p_extortion", xml).text();
+		texto += "<br><label>Estelionatário: <label> " + $("p_swindler", xml).text();
+		texto += "<br><label>Outros: <label> " + $("p_others", xml).text();
+		texto += "<br><label>Total: <label> " + $("p_total", xml).text();
+		
+		$("#resultado").html(texto);
+		$('resultado').hide();
+		initialize($address, $("address_latitude", xml).text(), $("address_longitude", xml).text(), $("delegacy_name", xml).text(), $("delegacy_latitude", xml).text(), $("delegacy_longitude", xml).text());
+		$('resultado').fadeIn();
+	}, "xml");
+	
+}
+
+var infowindow;
+(function () {
+
+  google.maps.Map.prototype.markers = new Array();
+    
+  google.maps.Map.prototype.addMarker = function(marker) {
+    this.markers[this.markers.length] = marker;
+  };
+    
+  google.maps.Map.prototype.getMarkers = function() {
+    return this.markers
+  };
+})();
+  
+  function initialize(endereco, lat_endereco, lon_endereco, delegacia, lat_delegacia, lon_delegacia) {
+	var diferenceLong = (parseFloat(lon_endereco) - parseFloat(lon_delegacia))/2;
+	var diferenceLat = (parseFloat(lat_endereco) - parseFloat(lat_delegacia))/2;
+	
+    var latlng = new google.maps.LatLng(parseFloat(lat_delegacia) + diferenceLong, parseFloat(lon_delegacia) + diferenceLat);
+    var myOptions = {
+      zoom: 13,
+      center: latlng,
+      mapTypeId: google.maps.MapTypeId.ROADMAP
+    };
+    map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
+    
+    var a = new Array();
+    var t =  new Object();
+    t.name = "Seu endereço: " + endereco
+    t.lat =  lat_endereco
+    t.lng =  lon_endereco
+    a[0] = t;
+  
+    var t =  new Object();
+    t.name = "Delegacia Próxima: " + delegacia
+    t.lat =  lat_delegacia
+    t.lng =  lon_delegacia
+    a[1] = t;
+
+    for (var i = 0; i < a.length; i++) {
+        var latlng = new google.maps.LatLng(a[i].lat, a[i].lng);
+        map.addMarker(createMarker(a[i].name,latlng));
+     }   
+  }
+  
+  function createMarker(name, latlng) {
+    var marker = new google.maps.Marker({position: latlng, map: map});
+    google.maps.event.addListener(marker, "click", function() {
+      if (infowindow) infowindow.close();
+      infowindow = new google.maps.InfoWindow({content: name});
+      infowindow.open(map, marker);
+    });
+    return marker;
+  }
+</script>
+
+
+</head>
+<body>
+<h1>Violência em São Paulo</h1>
+<div>
+	<table>
+		<tr>
+			<td><p class="text"><input type="text" id="address" name="address"></p></td>
+			<td><p class="btn"><input type="button" id="buscar" name="buscar" value="Pesquisar" onclick="javascript:go()"></p></td>
+</div>
+<div id="resultado">
+
+</div>
+<div id="map_canvas"></div>
+</body>
+</html>
+	

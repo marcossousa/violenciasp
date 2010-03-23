@@ -1,0 +1,48 @@
+html {
+	padding: 0px;
+	margin: 0px;
+}
+
+h1 {
+	color: #334488;
+	font-size: 2em;
+	font: normal small-caps bold 3em Arial, sans-serif;
+}
+
+p.text input {
+	height: 40px;
+	width: 740px;
+	background-color: #AAAADE;
+	font-size: 1.5em;
+}
+
+p.btn input {
+	font-size: 2em;
+	position: relative;
+}
+
+#resultado {
+	font-size: 1em;
+	padding: 3px;
+	width: 300px;
+	float: left;
+	position: fixed;
+	margin-top: 100px;
+}
+
+#map_canvas {
+	float: right;
+	margin-right: 440px;
+	width: 520px; height: 400px;
+	position: relative;
+	margin-top: 100px;
+}
+
+label {
+	font: normal small-caps normal 1em Arial, sans-serif;
+}
+
+label b {
+	color: #A22;
+}
+

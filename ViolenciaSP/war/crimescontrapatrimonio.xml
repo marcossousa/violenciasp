@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<table xmlns="http://query.yahooapis.com/v1/schema/table.xsd">
+  <meta>
+  <author>Yahoo Open Hack Day</author>
+  <description>Expõem os dados estatisticos de criminalidade da SEADE</description>
+  <sampleQuery><![CDATA[use "http://violenciasp.appspot.com/crimescontrapatrimonio.xml" as indice_violencia;
+select * from indice_violencia where nome = 'DP Metropolitano de São Paulo']]></sampleQuery>
+  <documentationURL></documentationURL>
+  </meta>
+  <bindings>
+    <select itemPath="" produces="XML">
+    <urls>
+      <url>http://www.seade.gov.br/produtos/msp/jsg/jsg3_002.htm</url>
+    </urls>
+    <inputs>
+      <key id="nome" type="xs:string" paramType="variable"/>
+    </inputs>
+    <execute>
+    <![CDATA[
+		var page = y.query("select * from html where xpath='//tr' and url='http://www.seade.gov.br/produtos/msp/jsg/jsg3_002.htm'").results;
+	  	var output = <delegacies></delegacies>
+	  	var items = page..tr
+		
+	  	for (item in items) {
+			if (parseItem(page, item, 7) != '0') {
+				if (!nome || parseItem(page, item, 0) == nome) {
+		 			dp = <delegacy></delegacy>
+					dp.delegacy = parseItem(page, item, 0);
+					dp.robbery = parseItem(page, item, 1);
+					dp.thieves = parseItem(page, item, 2);
+					dp.kidnapping = parseItem(page, item, 3);
+					dp.extortion = parseItem(page, item, 4);
+					dp.swindler = parseItem(page, item, 5);
+					dp.others= parseItem(page, item, 6);
+					dp.total = parseItem(page, item, 7);
+					
+					output.delegacies += dp;
+				}
+			}
+		}
+      	response.object = output;
+
+	  	function parseItem(page, item, indexTD) {
+			if (page.tr[item].td[indexTD] && page.tr[item].td[indexTD].p[0]) {
+				return new String(page.tr[item].td[indexTD].p[0]).replace('<p>', '');
+			} 
+			return '0';
+	  	}
+    ]]>
+    </execute>
+  </select> 
+  </bindings>
+</table>

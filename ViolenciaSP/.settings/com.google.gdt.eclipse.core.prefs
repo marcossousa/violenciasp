@@ -1,0 +1,5 @@
+#Sat Mar 20 19:16:59 BRT 2010
+eclipse.preferences.version=1
+jarsExcludedFromWebInfLib=/Users/wandi/jars/commons-codec.jar|/Users/wandi/jars/commons-httpclient.jar|/Users/wandi/jars/commons-logging.jar
+warSrcDir=war
+warSrcDirIsOutput=true

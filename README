@@ -1,0 +1,10 @@
+----------------------------------------------------------------
+	VIOLENCIA SP
+----------------------------------------------------------------
+Diversas situações como visitantes à São Paulo ou quando uma pessoa deseja
+comprar um imóvel, os índices de violência podem ajudar em muito estas
+pessoas a tomar uma decisão.
+
+A partir de um endereço informado pelo usuário, nosso hack exibe informações sobre os índices de violência na região do endereço informado.
+
+Para isso, nós encontramos qual a DP mais próxima do local usando as APIs de mapas do Yahoo, e após isso nós fazemos uma consulta usando YQL no site das delegacias de São Paulo para obter os dados para aquela delegacia específica. 
